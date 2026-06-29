@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover Uganda – gorilla trekking, safaris, the Nile, and more. Plan your dream trip with local mobile money or card, prices in UGX or USD.">
+    <title>Visit Uganda • Pearl of Africa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: '#2D5A27',
+                        earth: '#6B4226',
+                        savanna: '#D4A017',
+                        ugyellow: '#FCDC04',
+                        ugred: '#D90000',
+                        ugblack: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .heading-font { font-family: 'Playfair Display', serif; }
+
+        .hero-video {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .filter-btn.active {
+            background-color: #2D5A27;
+            color: white;
+            border-color: transparent;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active { display: flex; }
+    </style>
+</head>
+<body class="bg-zinc-50 text-zinc-900">
+
+    <!-- NAVBAR -->
+    <nav class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-zinc-200">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-3xl">🦍</span>
+                <span class="heading-font text-2xl font-bold text-forest">Visit Uganda</span>
+            </div>
+            <div class="hidden lg:flex items-center gap-8 text-sm font-medium">
+                <a href="#" class="hover:text-forest transition">Destinations</a>
+                <a href="#" class="hover:text-forest transition">Experiences</a>
+                <a href="#" class="hover:text-forest transition">Travel Guide</a>
+                <a href="#" class="hover:text-forest transition">About</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="currency-toggle flex items-center gap-2 text-sm font-semibold">
+                    <span class="usd-label text-savanna">USD</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="currencySwitch" class="sr-only peer" onchange="updateAllPrices()">
+                        <div class="w-9 h-5 bg-zinc-300 rounded-full peer peer-checked:bg-forest peer-focus:ring-2 peer-focus:ring-forest/50 transition-all after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4"></div>
+                    </label>
+                    <span class="ugx-label text-zinc-400">UGX</span>
+                </div>
+                <button class="bg-forest text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-green-800 transition">Plan Trip</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative h-screen overflow-hidden">
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-elephants-in-the-african-savanna-47886-large.mp4" type="video/mp4">
+        </video>
+        <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1600&q=80" alt="Uganda safari landscape" class="absolute inset-0 w-full h-full object-cover z-0">
+        
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70 flex items-center justify-center z-10">
+            <div class="text-center text-white px-4 max-w-4xl">
+                <h1 class="heading-font text-5xl md:text-7xl font-bold tracking-tight mb-4">
+                    The Pearl of Africa<br>is Calling
+                </h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-2xl mx-auto">
+                    Gorillas in the mist, roaring waterfalls, and savannas that stretch forever. Your Ugandan story starts here.
+                </p>
+                
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 max-w-3xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <div>
+                            <label class="block text-sm text-white/80 mb-1">Destination</label>
+                            <select id="finderDestination" class="w-full bg-white/90 text-zinc-800 rounded-xl px-4 py-3 focus:outline-none">
+                                <option>Bwindi (Gorillas)</option>
+                                <option>Murchison Falls</option>
+                                <option>Queen Elizabeth NP</option>
+                                <option>Kibale (Chimps)</option>
+                                <option>Jinja (Nile)</option>
+                                <option>Kidepo Valley</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-white/80 mb-1">Travelers</label>
+                            <input type="number" min="1" value="2" class="w-full bg-white/90 text-zinc-800 rounded-xl px-4 py-3 focus:outline-none">
+                        </div>
+                        <button class="bg-savanna text-ugblack font-bold py-3 rounded-xl hover:bg-amber-500 transition w-full">
+                            <i class="fas fa-search mr-2"></i>Find Trips
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- DESTINATIONS DIRECTORY -->
+    <section class="max-w-7xl mx-auto px-4 py-20">
+        <div class="text-center mb-12">
+            <p class="text-forest font-semibold uppercase tracking-widest">Explore</p>
+            <h2 class="heading-font text-4xl md:text-5xl font-bold mt-2">Ugandan Treasures</h2>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3 mb-12">
+            <button class="filter-btn active px-5 py-2 rounded-full border border-forest text-forest font-medium text-sm" onclick="filterDestinations('all', this)">All</button>
+            <button class="filter-btn px-5 py-2 rounded-full border border-forest text-forest font-medium text-sm" onclick="filterDestinations('wildlife', this)">🦁 Wildlife</button>
+            <button class="filter-btn px-5 py-2 rounded-full border border-forest text-forest font-medium text-sm" onclick="filterDestinations('primate', this)">🦍 Primates</button>
+            <button class="filter-btn px-5 py-2 rounded-full border border-forest text-forest font-medium text-sm" onclick="filterDestinations('adventure', this)">🌊 Adventure</button>
+            <button class="filter-btn px-5 py-2 rounded-full border border-forest text-forest font-medium text-sm" onclick="filterDestinations('culture', this)">🏛️ Culture</button>
+            <button class="filter-btn px-5 py-2 rounded-full border border-forest text-forest font-medium text-sm" onclick="filterDestinations('hiking', this)">⛰️ Hiking</button>
+        </div>
+
+        <div id="destinationsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <!-- TRAVELER'S GUIDE -->
+    <section class="bg-earth/5 py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="heading-font text-4xl font-bold text-center mb-12">Traveler's Guide</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <button class="guide-tab active bg-forest text-white px-4 py-2 rounded-full text-sm font-medium" onclick="switchGuide('visa', this)">Visa</button>
+                        <button class="guide-tab px-4 py-2 rounded-full text-sm font-medium border" onclick="switchGuide('packing', this)">Packing</button>
+                        <button class="guide-tab px-4 py-2 rounded-full text-sm font-medium border" onclick="switchGuide('seasons', this)">Best Time</button>
+                        <button class="guide-tab px-4 py-2 rounded-full text-sm font-medium border" onclick="switchGuide('safety', this)">Safety</button>
+                    </div>
+                    <div id="guideContent" class="text-zinc-700"></div>
+                </div>
+                <div class="bg-forest text-white rounded-2xl p-8 flex flex-col justify-center">
+                    <i class="fas fa-passport text-4xl mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-3">Uganda e‑Visa</h3>
+                    <p class="mb-6">Apply online in 3 simple steps. We'll guide you through the process.</p>
+                    <button class="bg-savanna text-black font-semibold px-6 py-3 rounded-full w-fit hover:bg-amber-500 transition">Start Application</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOKING MODAL -->
+    <div id="bookingModal" class="modal">
+        <div class="bg-white rounded-2xl w-full max-w-lg p-6 relative mx-4 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeBooking()" class="absolute top-4 right-4 text-3xl hover:text-red-500">&times;</button>
+            <h2 class="heading-font text-2xl font-bold mb-6">Complete Your Booking</h2>
+            <form id="bookingForm" onsubmit="handleBooking(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Full Name</label>
+                    <input type="text" required class="w-full border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-forest">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Email</label>
+                    <input type="email" required class="w-full border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-forest">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Trip</label>
+                    <input id="bookingTripName" type="text" readonly class="w-full bg-zinc-100 border rounded-xl px-4 py-2.5 font-medium">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Travelers</label>
+                    <input type="number" min="1" value="2" class="w-full border rounded-xl px-4 py-2.5">
+                </div>
+                <div class="mb-6">
+                    <p class="text-sm font-medium mb-1">Total Price</p>
+                    <p id="bookingTotal" class="text-2xl font-bold text-forest">$0</p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Payment Method</label>
+                    <select class="w-full border rounded-xl px-4 py-2.5">
+                        <option>Mobile Money (MTN / Airtel)</option>
+                        <option>Credit / Debit Card</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-forest text-white font-semibold py-3 rounded-xl hover:bg-green-800 transition">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-ugblack text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-2xl">🦍</span>
+                    <span class="heading-font text-2xl font-bold">Visit Uganda</span>
+                </div>
+                <p class="text-zinc-400 text-sm">The Pearl of Africa awaits.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-3">Destinations</h4>
+                <ul class="text-sm text-zinc-400 space-y-2">
+                    <li>Bwindi Impenetrable</li>
+                    <li>Murchison Falls</li>
+                    <li>Queen Elizabeth NP</li>
+                    <li>Jinja & Nile</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-3">Company</h4>
+                <ul class="text-sm text-zinc-400 space-y-2">
+                    <li>About Us</li>
+                    <li>Contact</li>
+                    <li>Careers</li>
+                    <li>Press</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-3">Stay Connected</h4>
+                <div class="flex gap-4 text-xl">
+                    <i class="fab fa-instagram hover:text-savanna cursor-pointer"></i>
+                    <i class="fab fa-facebook hover:text-savanna cursor-pointer"></i>
+                    <i class="fab fa-x-twitter hover:text-savanna cursor-pointer"></i>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-zinc-500 text-xs mt-12 pt-8 border-t border-zinc-800">
+            © 2026 Visit Uganda. Crafted for adventurers.
+        </div>
+    </footer>
+
+    <script>
+        let exchangeRate = 3700;
+        let currentCurrency = 'USD';
+
+        const destinations = [
+            { id: 'bwindi', name: 'Gorilla Trekking Bwindi', category: 'primate', image: 'https://www.bwindinationalparkuganda.com/wp-content/uploads/2019/02/gorilla-trekking-700x450.jpg', days: 5, price: 700, desc: 'Trek through misty forests for a life-changing encounter with mountain gorillas.', rating: 4.9 },
+            { id: 'murchison', name: 'Murchison Falls Safari', category: 'wildlife', image: 'https://cdn.britannica.com/92/123592-050-F1F7ADCC/Murchison-Falls-Victoria-Nile-River-Uganda.jpg', days: 4, price: 520, desc: 'Witness the Nile squeeze through a 7m gorge and spot lions, elephants, and giraffes.', rating: 4.8 },
+            { id: 'queen', name: 'Queen Elizabeth & Tree Lions', category: 'wildlife', image: 'https://www.queenelizabethparkuganda.com/wp-content/uploads/2019/12/isahsha-tree-climbing-lions.jpg', days: 4, price: 480, desc: 'Game drives in savanna and boat cruises on the Kazinga Channel. See the famous tree-climbing lions.', rating: 4.7 },
+            { id: 'kibale', name: 'Chimpanzee Tracking Kibale', category: 'primate', image: 'https://cazloyd.com/wp-content/uploads/2024/12/thumbnail_IMG_3070.jpg.webp', days: 3, price: 380, desc: 'Hike Kibale Forest and spend time with our closest relatives in the wild.', rating: 4.8 },
+            { id: 'jinja', name: 'Nile White‑Water Rafting', category: 'adventure', image: 'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80', days: 2, price: 250, desc: 'Ride Grade 5 rapids at the source of the Nile. Adrenaline guaranteed.', rating: 4.6 },
+            { id: 'rwenzori', name: 'Rwenzori Mountains Trek', category: 'hiking', image: 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=800&q=80', days: 7, price: 900, desc: 'Hike the legendary "Mountains of the Moon" through surreal alpine vegetation.', rating: 4.9 },
+            { id: 'kidepo', name: 'Kidepo Valley Wilderness', category: 'wildlife', image: 'https://images.squarespace-cdn.com/content/v1/657b302ad0d11e71b22b40c3/1705507517446-A2MRD79GEC80NSH24OVP/photo_1979.jpg', days: 5, price: 680, desc: 'Remote and stunning – the most beautiful park in Africa, with cheetahs and ostriches.', rating: 4.9 },
+            { id: 'kampala', name: 'Kampala City & Kasubi Tombs', category: 'culture', image: 'https://upload.wikimedia.org/wikipedia/commons/7/76/Kampala_Kasubi_Tombs.jpg', days: 3, price: 180, desc: 'Explore vibrant markets, the Uganda Museum, and UNESCO‑listed Kasubi Tombs.', rating: 4.5 },
+            { id: 'bunyonyi', name: 'Lake Bunyonyi Retreat', category: 'adventure', image: 'https://www.lakebunyonyiuganda.com/wp-content/uploads/2022/10/three-days-lake-bunyonyi.jpg', days: 3, price: 300, desc: 'Canoe, swim, and relax among 29 islands on Africa’s second deepest lake.', rating: 4.7 }
+        ];
+
+        const guideData = {
+            visa: `<p class="mb-2"><strong>Visa on arrival</strong> or apply online. Cost: <span class="price-display" data-usd="50">$50 USD</span></p>`,
+            packing: `<ul class="list-disc list-inside space-y-2"><li>Lightweight long-sleeved clothing</li><li>Sturdy hiking boots</li><li>Rain jacket</li><li>Insect repellent & sunscreen</li><li>Binoculars</li></ul>`,
+            seasons: `<p><strong>Best time:</strong> December–February & June–August</p>`,
+            safety: `<p>Uganda is generally safe. Follow park rules and use common sense.</p>`
+        };
+
+        function formatPrice(usdAmount, toCurrency) {
+            if (toCurrency === 'UGX') {
+                const ugx = Math.round(usdAmount * exchangeRate);
+                return 'UGX ' + ugx.toLocaleString('en-US');
+            }
+            return '$' + usdAmount.toLocaleString('en-US') + ' USD';
+        }
+
+        function updateAllPrices() {
+            const switchEl = document.getElementById('currencySwitch');
+            currentCurrency = switchEl.checked ? 'UGX' : 'USD';
+            localStorage.setItem('preferredCurrency', currentCurrency);
+
+            document.querySelectorAll('.price-display').forEach(el => {
+                const usd = parseFloat(el.getAttribute('data-usd'));
+                if (usd) el.textContent = formatPrice(usd, currentCurrency);
+            });
+        }
+
+        function renderDestinations(filter = 'all') {
+            const grid = document.getElementById('destinationsGrid');
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? destinations : destinations.filter(d => d.category === filter);
+
+            filtered.forEach(dest => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl overflow-hidden shadow-lg hover:-translate-y-2 transition-transform duration-300 group';
+                card.innerHTML = `
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="${dest.image}" alt="${dest.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-3 right-3 bg-white/90 rounded-full px-3 py-1 text-sm font-medium text-forest">${dest.days} days</div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold">${dest.name}</h3>
+                        <div class="flex items-center gap-1 mt-1 text-yellow-500 text-sm">
+                            ${'★'.repeat(Math.floor(dest.rating))} ${dest.rating}
+                        </div>
+                        <p class="text-zinc-600 mt-2 text-sm line-clamp-3">${dest.desc}</p>
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-lg font-bold text-forest price-display" data-usd="${dest.price}">${formatPrice(dest.price, currentCurrency)}</span>
+                            <button onclick="openBooking('${dest.name}', ${dest.price})" class="bg-forest text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-green-800 transition">Book Now</button>
+                        </div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterDestinations(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderDestinations(category);
+        }
+
+        function openBooking(tripName, usdPrice) {
+            document.getElementById('bookingTripName').value = tripName;
+            document.getElementById('bookingTotal').textContent = formatPrice(usdPrice, currentCurrency);
+            document.getElementById('bookingModal').setAttribute('data-trip-usd', usdPrice);
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        function closeBooking() {
+            document.getElementById('bookingModal').classList.remove('active');
+        }
+
+        function handleBooking(e) {
+            e.preventDefault();
+            alert('🎉 Booking confirmed! Thank you for choosing Uganda!');
+            closeBooking();
+        }
+
+        function switchGuide(tab, btn) {
+            document.querySelectorAll('.guide-tab').forEach(b => b.classList.remove('bg-forest', 'text-white'));
+            btn.classList.add('bg-forest', 'text-white');
+            document.getElementById('guideContent').innerHTML = guideData[tab];
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('preferredCurrency') || 'USD';
+            document.getElementById('currencySwitch').checked = saved === 'UGX';
+            currentCurrency = saved;
+
+            renderDestinations('all');
+            updateAllPrices();
+            document.querySelector('.guide-tab').click();
+        });
+    </script>
+</body>
+</html>
